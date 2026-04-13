@@ -76,6 +76,8 @@ tab1, tab2, tab3, tab4 = st.tabs([
     "📈 Price Trends", "🏦 Mortgage Rates", "🗺 Affordability Map", "🔮 Price Predictor"
 ])
 
+year_ticks = pd.date_range(start="2010-01-01", end="2025-01-01", freq="2YS")
+
 with tab1:
     fig = px.line(
         filtered, x="date", y="avg_house_price",
@@ -84,7 +86,7 @@ with tab1:
         labels={"avg_house_price": "Average Price (£)", "date": "Year"}
     )
     fig.update_layout(yaxis=dict(tickformat=",.0f", tickprefix="£"))
-    fig.update_xaxes(tickformat="%Y", dtick="M24")
+    fig.update_xaxes(tickvals=year_ticks, ticktext=[str(y.year) for y in year_ticks])
     st.plotly_chart(fig, use_container_width=True)
 
     fig2 = px.line(
@@ -93,7 +95,7 @@ with tab1:
         title="Price-to-Income Ratio Over Time",
         labels={"price_to_income": "Price / Income", "date": "Year"}
     )
-    fig2.update_xaxes(tickformat="%Y", dtick="M24")
+    fig2.update_xaxes(tickvals=year_ticks, ticktext=[str(y.year) for y in year_ticks])
     fig2.add_hline(y=4, line_dash="dash", line_color="green",
                    annotation_text="Affordable threshold (4x)")
     fig2.add_hline(y=8, line_dash="dash", line_color="red",
@@ -125,7 +127,7 @@ with tab2:
         height=420,
         legend=dict(orientation="h", y=1.05),
     )
-    fig_rates.update_xaxes(tickformat="%Y", dtick="M24")
+    fig_rates.update_xaxes(tickvals=year_ticks, ticktext=[str(y.year) for y in year_ticks])
     st.plotly_chart(fig_rates, use_container_width=True)
 
     st.subheader("Mortgage Rate Impact on Affordability")
