@@ -83,10 +83,8 @@ with tab1:
         title="House Price Trends by Region",
         labels={"avg_house_price": "Average Price (£)", "date": "Year"}
     )
-    fig.update_layout(
-        yaxis=dict(tickformat=",.0f", tickprefix="£"),
-        xaxis=dict(tickformat="%Y", dtick="M24")
-    )
+    fig.update_layout(yaxis=dict(tickformat=",.0f", tickprefix="£"))
+    fig.update_xaxes(tickformat="%Y", dtick="M24")
     st.plotly_chart(fig, use_container_width=True)
 
     fig2 = px.line(
@@ -95,7 +93,7 @@ with tab1:
         title="Price-to-Income Ratio Over Time",
         labels={"price_to_income": "Price / Income", "date": "Year"}
     )
-    fig2.update_layout(xaxis=dict(tickformat="%Y", dtick="M24"))
+    fig2.update_xaxes(tickformat="%Y", dtick="M24")
     fig2.add_hline(y=4, line_dash="dash", line_color="green",
                    annotation_text="Affordable threshold (4x)")
     fig2.add_hline(y=8, line_dash="dash", line_color="red",
@@ -126,8 +124,8 @@ with tab2:
         yaxis_ticksuffix="%",
         height=420,
         legend=dict(orientation="h", y=1.05),
-        xaxis=dict(tickformat="%Y", dtick="M24")
     )
+    fig_rates.update_xaxes(tickformat="%Y", dtick="M24")
     st.plotly_chart(fig_rates, use_container_width=True)
 
     st.subheader("Mortgage Rate Impact on Affordability")
