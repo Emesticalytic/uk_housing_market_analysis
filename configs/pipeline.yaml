@@ -1,0 +1,18 @@
+project:
+  name: uk-housing-analysis
+  version: "0.1.0"
+
+data:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  external_dir: data/external
+
+modelling:
+  test_size: 0.2
+  forecast_horizon: 12
+  random_seed: 42
+
+mlflow:
+  experiment_name: uk-housing-forecast
+  tracking_uri: "http://localhost:5000"
+  model_name: uk-housing-price-forecaster

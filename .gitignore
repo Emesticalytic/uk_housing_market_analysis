@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Environments
+.env
+.venv
+venv/
+env/
+
+# Data (raw data stays local)
+data/raw/
+data/interim/
+*.csv
+*.parquet
+*.feather
+!data/external/.gitkeep
+!data/processed/.gitkeep
+
+# Models
+models/
+*.pkl
+*.joblib
+*.pt
+*.pth
+mlruns/
+mlartifacts/
+
+# Notebooks outputs
+notebooks/**/.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Docker
+.docker/

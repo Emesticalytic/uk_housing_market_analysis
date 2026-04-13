@@ -1,0 +1,93 @@
+version: "3.9"
+
+services:
+
+  # ── MLflow tracking server ───────────────────────────────────────────────
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.12.2
+    container_name: uk_housing_mlflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - mlflow_data:/mlflow
+    command: >
+      mlflow server
+        --host 0.0.0.0
+        --port 5000
+        --backend-store-uri sqlite:///mlflow/mlflow.db
+        --default-artifact-root /mlflow/artifacts
+    networks:
+      - housing_net
+
+  # ── FastAPI prediction endpoint ──────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.api
+    container_name: uk_housing_api
+    ports:
+      - "8000:8000"
+    env_file: .env
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    volumes:
+      - ./models:/app/models:ro
+      - ./configs:/app/configs:ro
+    depends_on:
+      - mlflow
+    networks:
+      - housing_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ── Streamlit dashboard ──────────────────────────────────────────────────
+  dashboard:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.dashboard
+    container_name: uk_housing_dashboard
+    ports:
+      - "8501:8501"
+    env_file: .env
+    environment:
+      - API_BASE_URL=http://api:8000
+    volumes:
+      - ./data/processed:/app/data/processed:ro
+      - ./reports:/app/reports:ro
+    depends_on:
+      - api
+    networks:
+      - housing_net
+    restart: unless-stopped
+
+  # ── Pipeline runner (one-shot training job) ──────────────────────────────
+  pipeline:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.pipeline
+    container_name: uk_housing_pipeline
+    env_file: .env
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./configs:/app/configs
+      - ./reports:/app/reports
+    depends_on:
+      - mlflow
+    networks:
+      - housing_net
+    profiles:
+      - train   # only starts with: docker compose --profile train up pipeline
+
+volumes:
+  mlflow_data:
+
+networks:
+  housing_net:
+    driver: bridge
