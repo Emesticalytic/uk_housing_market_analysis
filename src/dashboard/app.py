@@ -81,17 +81,21 @@ with tab1:
         filtered, x="date", y="avg_house_price",
         color="region", template="plotly_dark",
         title="House Price Trends by Region",
-        labels={"avg_house_price": "Average Price (£)", "date": "Date"}
+        labels={"avg_house_price": "Average Price (£)", "date": "Year"}
     )
-    fig.update_layout(yaxis_tickformat="£,.0f")
+    fig.update_layout(
+        yaxis=dict(tickformat=",.0f", tickprefix="£"),
+        xaxis=dict(tickformat="%Y", dtick="M24")
+    )
     st.plotly_chart(fig, use_container_width=True)
 
     fig2 = px.line(
         filtered, x="date", y="price_to_income",
         color="region", template="plotly_dark",
         title="Price-to-Income Ratio Over Time",
-        labels={"price_to_income": "Price / Income", "date": "Date"}
+        labels={"price_to_income": "Price / Income", "date": "Year"}
     )
+    fig2.update_layout(xaxis=dict(tickformat="%Y", dtick="M24"))
     fig2.add_hline(y=4, line_dash="dash", line_color="green",
                    annotation_text="Affordable threshold (4x)")
     fig2.add_hline(y=8, line_dash="dash", line_color="red",
@@ -117,11 +121,12 @@ with tab2:
     fig_rates.update_layout(
         template="plotly_dark",
         title="UK Mortgage Rate vs BOE Base Rate (2010–2024)",
-        xaxis_title="Date",
+        xaxis_title="Year",
         yaxis_title="Rate (%)",
         yaxis_ticksuffix="%",
         height=420,
-        legend=dict(orientation="h", y=1.05)
+        legend=dict(orientation="h", y=1.05),
+        xaxis=dict(tickformat="%Y", dtick="M24")
     )
     st.plotly_chart(fig_rates, use_container_width=True)
 
