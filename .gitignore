@@ -21,6 +21,7 @@ data/interim/
 *.feather
 !data/external/.gitkeep
 !data/processed/.gitkeep
+!data/processed/uk_housing_data.csv
 
 # Models
 models/

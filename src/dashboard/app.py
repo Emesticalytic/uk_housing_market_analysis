@@ -29,7 +29,7 @@ st.markdown("""
 st.title("🏠 UK Regional Housing Market Analysis")
 st.caption("Data: ONS House Price Index | Model: Gradient Boosting | MLflow tracked")
 
-DATA_PATH = Path(__file__).resolve().parent.parent / "data" / "uk_housing_data.csv"
+DATA_PATH = Path(__file__).resolve().parent.parent.parent / "data" / "processed" / "uk_housing_data.csv"
 df = pd.read_csv(DATA_PATH, parse_dates=["date"])
 df["year"] = df["date"].dt.year
 
